@@ -80,9 +80,12 @@ with st.form("prediction_form"):
             'avg_price_per_room': avg_price_per_room,
             'no_of_special_requests': no_of_special_requests
         }
+        st.write("Input Data:")
+        st.dataframe(pd.DataFrame([data]))
         result = predict(data)
         st.subheader(f"Prediction Result: {result}")
 
+# Test Case - Not Canceled
 if st.button("Test Case - Not Canceled"):
     test_data_1 = {
         'no_of_adults': 2,
@@ -103,9 +106,12 @@ if st.button("Test Case - Not Canceled"):
         'avg_price_per_room': 100.0,
         'no_of_special_requests': 1
     }
+    st.write("Test Case - Not Canceled Input:")
+    st.dataframe(pd.DataFrame([test_data_1]))
     result = predict(test_data_1)
     st.subheader(f"Test Case Result: {result}")
 
+# Test Case - Canceled
 if st.button("Test Case - Canceled"):
     test_data_2 = {
         'no_of_adults': 2,
@@ -126,5 +132,7 @@ if st.button("Test Case - Canceled"):
         'avg_price_per_room': 130.0,
         'no_of_special_requests': 0
     }
+    st.write("Test Case - Canceled Input:")
+    st.dataframe(pd.DataFrame([test_data_2]))
     result = predict(test_data_2)
     st.subheader(f"Test Case Result: {result}")
