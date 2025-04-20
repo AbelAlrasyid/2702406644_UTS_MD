@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 import pickle
 import gzip
-from predictor import BookingPredictor  # pastikan file ini ada di folder yang sama
+from predictor import BookingPredictor  # pastikan file predictor.py ada di folder yang sama
 
 st.set_page_config(page_title="Hotel Cancellation Predictor", layout="centered")
-st.title("Hotel Reservation Status Classifier 🏨")
+st.title("🛎️ Hotel Reservation Status Classifier")
 
-# Load model dan scaler dari file .pkl.gz dan .pkl
+# --- Load Model dan Scaler ---
 with gzip.open("best_rf_model.pkl.gz", "rb") as f:
     model = pickle.load(f)
 
@@ -20,7 +20,7 @@ with open("robust_scaler.pkl", "rb") as f:
 with open("columns.pkl", "rb") as f:
     columns = pickle.load(f)
 
-# Inisialisasi objek predictor
+# --- Setup Predictor ---
 predictor = BookingPredictor(
     model_path=None,
     standard_scaler_path=None,
@@ -33,7 +33,7 @@ predictor.standard_scaler = standard_scaler
 predictor.robust_scaler = robust_scaler
 predictor.columns = columns
 
-# Test case
+# --- Test Case ---
 test_case_1 = {
     "Booking_ID": "INN00001",
     "no_of_adults": 2,
@@ -76,22 +76,21 @@ test_case_2 = {
     "no_of_special_requests": 0
 }
 
-# Dropdown untuk pilih test case
 test_options = {
     "Test Case 1": test_case_1,
     "Test Case 2": test_case_2
 }
 
+# --- Select Test Case ---
 option = st.selectbox("🔍 Pilih Test Case", list(test_options.keys()))
 selected_data = test_options[option]
 
-# Tampilkan data input
-st.write("### 📋 Data yang digunakan:")
+st.write("### Data yang digunakan untuk prediksi:")
 st.dataframe(pd.DataFrame([selected_data]))
 
-# Tombol prediksi
+# --- Predict Button ---
 if st.button("Predict"):
     input_df = pd.DataFrame([selected_data])
     prediction = predictor.predict(input_df)
-    result = "Canceled ❌" if prediction[0] == 1 else "Not Canceled ✅"
+    result = "❌ Dibatalkan" if prediction[0] == 1 else "✅ Tidak Dibatalkan"
     st.success(f"Hasil Prediksi: **{result}**")
