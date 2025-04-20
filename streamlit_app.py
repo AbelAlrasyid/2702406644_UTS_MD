@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import datetime  # <-- Tambahan
 
 # Load model dan scaler
 @st.cache_resource
@@ -49,7 +50,11 @@ with st.form("prediction_form"):
     required_car_parking_space = st.selectbox("Parking Space Required", [0, 1])
     room_type_reserved = st.selectbox("Room Type", ['Room_Type 1', 'Room_Type 2', 'Room_Type 3', 'Room_Type 4', 'Room_Type 5', 'Room_Type 6', 'Room_Type 7'])
     lead_time = st.number_input("Lead Time", value=30)
-    arrival_year = st.selectbox("Arrival Year", [2017, 2018])
+
+    # ✅ Dynamic year selection
+    current_year = datetime.datetime.now().year
+    arrival_year = st.selectbox("Arrival Year", list(range(2017, current_year + 1)))
+
     arrival_month = st.selectbox("Arrival Month", list(range(1, 13)))
     arrival_date = st.selectbox("Arrival Date", list(range(1, 32)))
     market_segment_type = st.selectbox("Market Segment", ['Online', 'Offline', 'Corporate', 'Complementary', 'Aviation'])
@@ -96,7 +101,7 @@ if st.button("Test Case - Not Canceled"):
         'required_car_parking_space': 1,
         'room_type_reserved': 'Room_Type 1',
         'lead_time': 20,
-        'arrival_year': 2018,
+        'arrival_year': current_year,
         'arrival_month': 8,
         'arrival_date': 15,
         'market_segment_type': 'Online',
@@ -122,7 +127,7 @@ if st.button("Test Case - Canceled"):
         'required_car_parking_space': 0,
         'room_type_reserved': 'Room_Type 6',
         'lead_time': 200,
-        'arrival_year': 2018,
+        'arrival_year': current_year,
         'arrival_month': 12,
         'arrival_date': 28,
         'market_segment_type': 'Offline',
