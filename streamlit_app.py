@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
 import pickle
-import datetime  # <-- Tambahan
+import datetime  #Settings untuk bisa memilih current year
 
-# Load model dan scaler
+#Load model dan scaler
 @st.cache_resource
 def load_all():
     with open("best_xgb_model.pkl", "rb") as f:
@@ -51,7 +51,7 @@ with st.form("prediction_form"):
     room_type_reserved = st.selectbox("Room Type", ['Room_Type 1', 'Room_Type 2', 'Room_Type 3', 'Room_Type 4', 'Room_Type 5', 'Room_Type 6', 'Room_Type 7'])
     lead_time = st.number_input("Lead Time", value=30)
 
-    # ✅ Dynamic year selection
+    #Dynamic year selection
     current_year = datetime.datetime.now().year
     arrival_year = st.selectbox("Arrival Year", list(range(2017, current_year + 1)))
 
@@ -90,7 +90,7 @@ with st.form("prediction_form"):
         result = predict(data)
         st.subheader(f"Prediction Result: {result}")
 
-# Test Case - Not Canceled
+#Test Case yang outputnya Not Canceled
 if st.button("Test Case - Not Canceled"):
     test_data_1 = {
         'no_of_adults': 2,
@@ -111,12 +111,12 @@ if st.button("Test Case - Not Canceled"):
         'avg_price_per_room': 100.0,
         'no_of_special_requests': 1
     }
-    st.write("Test Case - Not Canceled Input:")
+    st.write("Test Case 1 - Not Canceled:")
     st.dataframe(pd.DataFrame([test_data_1]))
     result = predict(test_data_1)
     st.subheader(f"Test Case Result: {result}")
 
-# Test Case - Canceled
+#Test Case yang outputnya Canceled
 if st.button("Test Case - Canceled"):
     test_data_2 = {
         'no_of_adults': 2,
@@ -137,7 +137,7 @@ if st.button("Test Case - Canceled"):
         'avg_price_per_room': 130.0,
         'no_of_special_requests': 0
     }
-    st.write("Test Case - Canceled Input:")
+    st.write("Test Case 2 - Canceled:")
     st.dataframe(pd.DataFrame([test_data_2]))
     result = predict(test_data_2)
     st.subheader(f"Test Case Result: {result}")
