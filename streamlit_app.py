@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import pickle
 import gzip
-from predictor import BookingPredictor  # pastikan file predictor.py ada di folder yang sama
+from 3b_inference import BookingPredictor
 
 st.set_page_config(page_title="Hotel Cancellation Predictor", layout="centered")
 st.title("🛎️ Hotel Reservation Status Classifier")
