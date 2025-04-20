@@ -24,10 +24,10 @@ def load_model_and_scaler():
 model, standard_scaler, robust_scaler, columns = load_model_and_scaler()
 
 # --- Form Input User ---
-st.title("Hotel Booking Cancellation Prediction")
+st.title("📊 Prediksi Pembatalan Pemesanan Hotel")
 
 with st.form("user_form"):
-    st.subheader("Isi data pemesanan:")
+    st.subheader("📝 Isi data pemesanan:")
 
     no_of_adults = st.number_input("Jumlah Dewasa", min_value=0, value=2)
     no_of_children = st.number_input("Jumlah Anak", min_value=0, value=0)
@@ -48,7 +48,7 @@ with st.form("user_form"):
     room_type_reserved = st.selectbox("Tipe Kamar", ['Room_Type 1', 'Room_Type 2', 'Room_Type 3', 'Room_Type 4', 'Room_Type 5', 'Room_Type 6', 'Room_Type 7'])
     market_segment_type = st.selectbox("Segment Pasar", ['Online', 'Offline', 'Corporate', 'Complementary', 'Aviation'])
 
-    submit = st.form_submit_button("Prediksi")
+    submit = st.form_submit_button("🔮 Prediksi")
 
 if submit:
     # --- Buat DataFrame dari input ---
@@ -73,25 +73,35 @@ if submit:
     }])
 
     # --- One-hot encoding (dummies) ---
-    input_encoded = pd.get_dummies(input_data, columns=['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'])
+    input_encoded = pd.get_dummies(input_data, columns=[
+        'type_of_meal_plan', 'room_type_reserved', 'market_segment_type'
+    ])
     input_encoded = input_encoded.reindex(columns=columns, fill_value=0)
 
     # --- Scaling ---
-    input_encoded[['arrival_month', 'arrival_date']] = standard_scaler.transform(input_encoded[['arrival_month', 'arrival_date']])
-    input_encoded[['no_of_adults', 'no_of_children', 'no_of_weekend_nights',
-                   'no_of_week_nights', 'required_car_parking_space', 'lead_time',
-                   'arrival_year', 'repeated_guest', 'no_of_previous_cancellations',
-                   'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
-                   'no_of_special_requests']] = robust_scaler.transform(
-                       input_encoded[['no_of_adults', 'no_of_children', 'no_of_weekend_nights',
-                                      'no_of_week_nights', 'required_car_parking_space', 'lead_time',
-                                      'arrival_year', 'repeated_guest', 'no_of_previous_cancellations',
-                                      'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
-                                      'no_of_special_requests']])
+    input_encoded[['arrival_month', 'arrival_date']] = standard_scaler.transform(
+        input_encoded[['arrival_month', 'arrival_date']]
+    )
+
+    input_encoded[[
+        'no_of_adults', 'no_of_children', 'no_of_weekend_nights',
+        'no_of_week_nights', 'required_car_parking_space', 'lead_time',
+        'arrival_year', 'repeated_guest', 'no_of_previous_cancellations',
+        'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
+        'no_of_special_requests'
+    ]] = robust_scaler.transform(
+        input_encoded[[
+            'no_of_adults', 'no_of_children', 'no_of_weekend_nights',
+            'no_of_week_nights', 'required_car_parking_space', 'lead_time',
+            'arrival_year', 'repeated_guest', 'no_of_previous_cancellations',
+            'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
+            'no_of_special_requests'
+        ]]
+    )
 
     # --- Prediksi ---
     prediction = model.predict(input_encoded)[0]
     proba = model.predict_proba(input_encoded)[0][prediction]
 
-    label = "Dibatalkan" if prediction == 1 else "Tidak Dibatalkan"
-    st.success(f"📊 Prediksi: **{label}** (Probabilitas: {proba:.2f})")
+    label = "❌ Dibatalkan" if prediction == 1 else "✅ Tidak Dibatalkan"
+    st.success(f"📢 Prediksi: **{label}** (Probabilitas: {proba:.2f})")
